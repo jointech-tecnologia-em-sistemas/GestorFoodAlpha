@@ -1,0 +1,102 @@
+<! DOCTYPE html > 
+<html lang="pt-br">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, user-scalable=no" />
+		<link rel="stylesheet" href="css/layout.css" />
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<style>
+			#form_login{
+				margin: 20px auto;
+				width: 80%;
+			}
+			#form_login input{
+				width: 100%;
+				float:left;
+				margin:10px 0 !important;
+			}
+			#form_login button{
+				padding:10px 0;
+				width:100%;
+				margin:0;
+				font-size:1.6em;
+			}
+			.copyright{
+				float:left;
+				width:100%;
+				margin:20px 0;
+				text-align:center;
+			}
+		</style>
+	</head>
+	<body >
+		<span id="garcom" data-name=""></span>
+		<div id="main">			
+			<div id="sidebar" class="pull-right window-modal">
+				<header>
+					<h1>Gestor Food Mobile <button class="about btn btn-primary pull-right">Sobre</button></h1>
+				</header>
+				<section>
+					<form name="formLogin" class="form-horizontal" id="form_login" >
+						<div class="control-group">
+							<input type="text" name="login" placeholder="Usuario" />
+							<input type="password" name="senha" placeholder="Senha"  />
+							<button type="submit" class="btn btn-primary">Entrar</button>
+						</div>
+					</form>
+				<div class="logo"></div>
+				</section>
+				<em class="copyright">&copy; 2014. Jointech Tecnologia em Sistemas</em>
+			</div>
+		</div>
+
+		<script language="javascript" src="js/jquery.min.js"></script>
+		<script language="javascript" src="js/globalConfig.js"></script>
+		<script language="javascript" src="js/app.js"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$('.about').click(function(){
+					about();
+				});
+				$('#form_login').submit(function(event){
+					event.preventDefault();
+
+					$.ajax({
+						type 	: 'POST',
+						url  	: generalUrl + generalControllerUrl + '/login.controller.php',
+						data 	:  $(this).serialize(),
+						beforeSend: function(){
+							openLoading();
+						},
+						timeout: 2000,
+						complete : function(){
+							closeLoading();
+						},
+						success : function(data){
+							if(data == ''){
+								dialog('Erro, servidor não retornou resposta','buttonClose','OK','none');
+							}else{
+								response = JSON.parse(data);
+								
+								if(global_debug == 'yes'){
+									$('#main').load('app/mvc/view/main.html');
+								}else{
+									if(response.error == "true"){													
+										dialog(response.message,'buttonClose','OK','none');
+									}else if(response.error == "false"){		
+										$('#garcom').attr('data-name',response.login);
+										$('#main').load('app/mvc/view/main.html');
+									}							
+								}
+							}
+						},
+						error : function(XMLHttpRequest, textStatus, errorThrown){
+							errorException(XMLHttpRequest);
+						}
+					});
+				});
+			});
+		</script>
+	</body>
+</html>
