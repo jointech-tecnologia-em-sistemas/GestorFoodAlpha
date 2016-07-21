@@ -1,4 +1,4 @@
-	generalIP = 'http://192.168.56.1';
+	generalIP = 'http://192.168.56.1:8080';
 	//generalIP = 'http://localhost';
 	generalUrl 				= generalIP +'/gestorFoodMobile/';
 	generalControllerUrl 	= 'app/mvc/controller';
