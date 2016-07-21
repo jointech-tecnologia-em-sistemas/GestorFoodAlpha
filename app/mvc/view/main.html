@@ -34,7 +34,7 @@
 			$(this).val('');
 		});
 		
-		//Ao clicar em uma das opções da grid principal abre uma janela com as opções referentes ao botao clicado
+		//Ao clicar em uma das opï¿½ï¿½es da grid principal abre uma janela com as opï¿½ï¿½es referentes ao botao clicado
 		$('.loadcomanda').click(function(){
 			comanda 	= $('#comanda').val();
 			mesa 		= $('#mesa').val();
@@ -43,13 +43,14 @@
 			if(comanda == ''){
 				dialog('Informe o numero da comanda!','buttonClose','OK','none');
 			}else{
-				//se o botao clickado for "incluir produtos" faz requisição dos grupos de produtos na base de dados.
+				//se o botao clickado for "incluir produtos" faz requisiï¿½ï¿½o dos grupos de produtos na base de dados.
 				if( typeOption == 'incluirprodutos'){
-					//Verifica se a comanda informada está cadastrada na base de dados
+					//Verifica se a comanda informada estï¿½ cadastrada na base de dados
+					console.log(mesa);
 					$.ajax({
 						url : generalUrl + generalControllerUrl + '/comanda.controller.php',
 						type:'POST',
-						data:{'action':'verificaComanda', 'comanda' : comanda,'IP':generalIP},
+						data:{'action':'verificaComanda', 'comanda' : comanda,'IP':generalIP, 'mesa':mesa},
 						timeout:2000,
 						beforeSend:function(){
 							openLoading();
@@ -83,7 +84,7 @@
 												event.preventDefault();
 												//Ao clicar nesse botao deve enviar o codigo do produto para comanda 
 												produto = $('#produto').val();
-												//Validação: Se o produto estiver em branco retorna false
+												//Validaï¿½ï¿½o: Se o produto estiver em branco retorna false
 												if(produto == ''){
 													dialog('Informe o codigo do produto!','buttonClose','OK','none');
 													
@@ -886,7 +887,7 @@
 		$.ajax({
 			url : generalUrl + generalControllerUrl + '/' + controller,
 			type : 'POST',
-			data : {'action' : action, 'comanda' : comanda, 'IP': generalIP},
+			data : {'action' : action, 'comanda' : comanda, 'IP': generalIP, 'mesa': mesa},
 			timeout : 2000,
 			beforeSend : function(){
 				openLoading();
