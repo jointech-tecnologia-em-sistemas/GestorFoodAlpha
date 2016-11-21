@@ -1,102 +1,60 @@
-<! DOCTYPE html > 
-<html lang="pt-br">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, user-scalable=no" />
-		<link rel="stylesheet" href="css/layout.css" />
-		<link rel="stylesheet" href="css/bootstrap.min.css" />
-		<style>
-			#form_login{
-				margin: 20px auto;
-				width: 80%;
-			}
-			#form_login input{
-				width: 100%;
-				float:left;
-				margin:10px 0 !important;
-			}
-			#form_login button{
-				padding:10px 0;
-				width:100%;
-				margin:0;
-				font-size:1.6em;
-			}
-			.copyright{
-				float:left;
-				width:100%;
-				margin:20px 0;
-				text-align:center;
-			}
-		</style>
-	</head>
-	<body >
-		<span id="garcom" data-name=""></span>
-		<div id="main">			
-			<div id="sidebar" class="pull-right window-modal">
-				<header>
-					<h1>Gestor Food Mobile <button class="about btn btn-primary pull-right">Sobre</button></h1>
-				</header>
-				<section>
-					<form name="formLogin" class="form-horizontal" id="form_login" >
-						<div class="control-group">
-							<input type="text" name="login" placeholder="Usuario" />
-							<input type="password" name="senha" placeholder="Senha"  />
-							<button type="submit" class="btn btn-primary">Entrar</button>
-						</div>
-					</form>
-				<div class="logo"></div>
-				</section>
-				<em class="copyright">&copy; 2014. Jointech Tecnologia em Sistemas</em>
-			</div>
-		</div>
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
 
-		<script language="javascript" src="js/jquery.min.js"></script>
-		<script language="javascript" src="js/globalConfig.js"></script>
-		<script language="javascript" src="js/app.js"></script>
-		
-		<script type="text/javascript">
-			$(document).ready(function(){
-				$('.about').click(function(){
-					about();
-				});
-				$('#form_login').submit(function(event){
-					event.preventDefault();
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
 
-					$.ajax({
-						type 	: 'POST',
-						url  	: generalUrl + generalControllerUrl + '/login.controller.php',
-						data 	:  $(this).serialize(),
-						beforeSend: function(){
-							openLoading();
-						},
-						timeout: 2000,
-						complete : function(){
-							closeLoading();
-						},
-						success : function(data){
-							if(data == ''){
-								dialog('Erro, servidor não retornou resposta','buttonClose','OK','none');
-							}else{
-								response = JSON.parse(data);
-								
-								if(global_debug == 'yes'){
-									$('#main').load('app/mvc/view/main.html');
-								}else{
-									if(response.error == "true"){													
-										dialog(response.message,'buttonClose','OK','none');
-									}else if(response.error == "false"){		
-										$('#garcom').attr('data-name',response.login);
-										$('#main').load('app/mvc/view/main.html');
-									}							
-								}
-							}
-						},
-						error : function(XMLHttpRequest, textStatus, errorThrown){
-							errorException(XMLHttpRequest);
-						}
-					});
-				});
-			});
-		</script>
-	</body>
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <title>Hello World</title>
+</head>
+
+<body>
+    <div class="app">
+        <h1>PhoneGap</h1>
+        <div id="deviceready" class="blink">
+            <p class="event listening">Connecting to Device</p>
+            <p class="event received">Device is Ready</p>
+        </div>
+    </div>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript">
+        app.initialize();
+    </script>
+</body>
+
 </html>
