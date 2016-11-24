@@ -206,7 +206,8 @@
 					windowVerConta('verConta', 'comanda.controller.php');
 				}
 				else if( typeOption == 'transferircomanda' ){
-					dialog('Esta função não está disponivel!','buttonClose','OK','none');
+					transferircomanda('transferircomanda', 'comanda.controller.php');
+					// dialog('Esta função não está disponivel!','buttonClose','OK','none');
 				}
 			}
 		});
@@ -1213,6 +1214,20 @@
 	}
 
 	function transferircomanda(action, controller){
-		
+		$.ajax({
+			url : generalUrl + generalControllerUrl + '/' + controller,
+			type : 'POST',
+			data : {'action' : action, 'comanda' : comanda, 'IP': generalIP},
+			timeout : 2000,
+			beforeSend : function(){
+				openLoading();
+			},
+			complete : function(){
+				closeLoading();
+			},						
+			success : function(data){
+
+			}
+		}
 	}
 </script>
