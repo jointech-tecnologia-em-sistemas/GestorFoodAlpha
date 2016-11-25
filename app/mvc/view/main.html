@@ -46,7 +46,6 @@
 				//se o botao clickado for "incluir produtos" faz requisi��o dos grupos de produtos na base de dados.
 				if( typeOption == 'incluirprodutos'){
 					//Verifica se a comanda informada est� cadastrada na base de dados
-					console.log(mesa);
 					$.ajax({
 						url : generalUrl + generalControllerUrl + '/comanda.controller.php',
 						type:'POST',
@@ -207,8 +206,7 @@
 					windowVerConta('verConta', 'comanda.controller.php');
 				}
 				else if( typeOption == 'transferircomanda' ){
-					transferircomanda('transferircomanda', 'comanda.controller.php');
-					// dialog('Esta função não está disponivel!','buttonClose','OK','none');
+					dialog('Esta função não está disponivel!','buttonClose','OK','none');
 				}
 			}
 		});
@@ -734,15 +732,18 @@
 											dialog('Informe uma quantidade valida!','buttonClose','OK','none');
 											$('#quantidade').val(1);
 										}else{
+											console.log("aqui porra");
+											console.log($(this).serialize() + "&IP=" + generalIP);
 											if(global_debug == 'yes'){
 												observacao = $('#observacao').text();
 												dialog('<br/>Descrição :'+ descricao + '<br/>Quantidade: '+ quantidade + '<br/>Preço: '+ preco + '<br/>Observacao: '+observacao,'buttonClose','OK','none');
 											}
 											//Envia os dados para a base de dados
+											// Acho que é aqui que a porra do erro esta acontecendo.
 											$.ajax({
 												url:generalUrl + generalControllerUrl + '/comanda.controller.php',
 												type : 'POST',
-												data: $(this).serialize(),
+												data: $(this).serialize() + "&IP=" + generalIP,
 												timeout: 2000,
 												beforeSend : function(event){
 													openLoading();
@@ -1209,23 +1210,5 @@
 				errorException(XMLHttpRequest);
 			}
 		})
-	}
-
-	function transferircomanda(action, controller){
-		$.ajax({
-			url : generalUrl + generalControllerUrl + '/' + controller,
-			type : 'POST',
-			data : {'action' : action, 'comanda' : comanda, 'IP': generalIP},
-			timeout : 2000,
-			beforeSend : function(){
-				openLoading();
-			},
-			complete : function(){
-				closeLoading();
-			},						
-			success : function(data){
-
-			}
-		}
 	}
 </script>
