@@ -206,7 +206,11 @@
 					windowVerConta('verConta', 'comanda.controller.php');
 				}
 				else if( typeOption == 'transferircomanda' ){
-					dialog('Esta função não está disponivel!','buttonClose','OK','none');
+					if(transferencia){
+						windowTransferirComanda("transferircomanda", "comanda.controller.php");
+					}else{
+						dialog('Esta função não está disponivel!','buttonClose','OK','none');
+					}
 				}
 			}
 		});
@@ -1210,5 +1214,9 @@
 				errorException(XMLHttpRequest);
 			}
 		})
+	}
+
+	function windowTransferirComanda(action, controller){
+
 	}
 </script>
