@@ -207,7 +207,57 @@
 				}
 				else if( typeOption == 'transferircomanda' ){
 					if(transferencia){
-						windowTransferirComanda("transferircomanda", "comanda.controller.php");
+
+						//Cria uma janela modal para aprensetar os dados					
+						html = $('<div>',{
+							append : [
+								$('<input>',{
+									'type' : 'number',
+									'placeholder' : 'Comanda:',
+									'id' : 'n_comanda'
+								}),
+								$('<br />'),
+								$('<input>',{
+									'type' : 'number',
+									'placeholder' : 'Mesa:',
+									'id' : 'n_mesa'
+								}),
+							],
+						});
+
+						var ArrayButtons = $('<div>',{
+							'class' : 'btn-group',
+							append : [
+								$('<a>',{
+									'class' : 'btnGroups btn btn-large buttonBack',
+									'text' : 'Voltar',
+									click : function(event) {
+										event.preventDefault();
+										$('#window-modaltransferir').remove();
+									}
+								}),
+								$('<a>',{
+									'class' : 'btnGroups btn btn-large btn-inverse',
+									'text' : 'Transferir Mesa',
+									click : function(event) {
+										event.preventDefault();
+										windowTransferir("0","transferircomanda", "comanda.controller.php", $("#n_mesa").val()  );
+									}
+								}),
+								$('<a>',{
+									'class' : 'btnGroups btn btn-large btn-inverse',
+									'text' : 'Transferir Comanda',
+									click : function(event) {
+										event.preventDefault();
+										windowTransferir("1","transferircomanda", "comanda.controller.php", $("#n_comanda").val() );
+									}
+								}),
+							]
+						});
+
+						windowModal('transferir', 'Transferir Comanda : ' + comanda + ' ou mesa : ' + mesa, html, 'body', 'noButtonBack', 'none', ArrayButtons);
+
+						// windowTransferirComanda("transferircomanda", "comanda.controller.php");
 					}else{
 						dialog('Esta função não está disponivel!','buttonClose','OK','none');
 					}
@@ -1216,7 +1266,45 @@
 		})
 	}
 
-	function windowTransferirComanda(action, controller){
+	function windowTransferir(type, action, controller, n_value){
 
+		var value;
+
+		if(type == '0'){
+			value = mesa;
+		}else if(type == '1'){
+			value = comanda;
+		}
+
+		// console.log(n_value);
+
+		$.ajax({
+			url : generalUrl + generalControllerUrl + '/' + controller,
+			type : 'POST',
+			data : {'action' : action, 'n_val' : n_value, 'IP': generalIP, 'type':type , 'val': value, 'comanda' : comanda,'IP':generalIP, 'mesa':mesa },
+			timeout : 2000,
+			beforeSend : function(){
+				openLoading();
+			},
+			complete : function(){
+				closeLoading();
+			},						
+			success : function(data){
+
+				// console.log(data);
+
+				if(global_debug == 'yes'){
+					dialog(data,'buttonClose','OK','none');
+				}
+				response = JSON.parse(data);
+				
+				if(response.error == "true"){
+					dialog(response.message,'buttonClose','OK','none');
+				}else{
+					dialog("Não foi possivel transferir", 'OK', 'none');
+				}
+			}
+		});
 	}
+	
 </script>
