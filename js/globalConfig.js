@@ -1,5 +1,5 @@
-	generalIP = 'http://192.168.1.2';
-	// generalIP = 'http://localhost';
+	// generalIP = 'http://192.168.1.2';
+	generalIP = 'http://localhost';
 	generalUrl 				= generalIP +'/gestorFoodMobile/';
 	generalControllerUrl 	= 'app/mvc/controller';
 	generalModelUrl 		= 'app/mvc/model';
@@ -8,3 +8,5 @@
 	transferencia = true;
 
 	global_debug = 'no';
+
+	itensTransferir = [];

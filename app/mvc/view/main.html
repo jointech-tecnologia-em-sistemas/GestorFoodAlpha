@@ -12,6 +12,7 @@
 						<li><a href="#" class="loadcomanda btn btn-primary" data-type="incluirprodutos">Incluir produtos </a></li>
 						<li><a href="#" class="loadcomanda btn btn-primary" data-type="verConta">Ver conta</a></li>
 						<li><a href="#" class="loadcomanda btn btn-primary" data-type="transferircomanda">Transferir comanda</a></li>
+						<li><a href="#" class="loadcomanda btn btn-primary" data-type="transferirItens">Transferir Itens</a></li>
 					</ul>
 				</nav>
 			</div>
@@ -258,6 +259,144 @@
 						windowModal('transferir', 'Transferir Comanda : ' + comanda + ' ou mesa : ' + mesa, html, 'body', 'noButtonBack', 'none', ArrayButtons);
 
 						// windowTransferirComanda("transferircomanda", "comanda.controller.php");
+					}else{
+						dialog('Esta função não está disponivel!','buttonClose','OK','none');
+					}
+				}
+				else if( typeOption == 'transferirItens' ){
+					if(transferencia){
+						$.ajax({
+							url : generalUrl + generalControllerUrl + '/' + 'comanda.controller.php',
+							type : 'POST',
+							data : {'action' : 'verConta', 'comanda' : comanda, 'IP': generalIP, 'mesa': mesa},
+							timeout : 2000,
+							beforeSend : function(){
+								openLoading();
+							},
+							complete : function(){
+								closeLoading();
+							},						
+							success : function(data){
+								closeLoading();
+								if(global_debug == 'yes'){
+									dialog(data,'buttonClose','OK','none');
+								}
+								response = JSON.parse(data);
+								
+								if(response.error == "true"){
+									dialog(response.message,'buttonClose','OK','none');
+								}
+								else{
+									html = $('<nav>',{
+										'class' : 'grid',
+										'id' : 'grid-conta',
+										append : [
+											$('<input>',{
+												'type' : 'number',
+												'placeholder' : 'Comanda:',
+												'id' : 'n_comanda'
+											}),
+											$('<br />'),
+											$('<input>',{
+												'type' : 'number',
+												'placeholder' : 'Mesa:',
+												'id' : 'n_mesa'
+											}),
+											$('<div>',{
+												'id' : 'grid-conta-header',
+												'class' : 'btn btn-inverse',
+												append : [
+													$('<em>',{'text' : 'Descrição'}).css({'width':'60%','float':'left','text-align':'left','text-indent':'10px'}),
+													$('<em>',{'text' : 'Qtd'}).css({'width':'13%','float':'left','text-align':'left','text-indent':0}),
+													$('<em>',{'text' : 'Preço'}).css({'width':'13%','float':'left','text-align':'left','text-indent':0}),
+													$('<em>',{'text' : 'Total'}).css({'width':'14%','float':'left','text-align':'left','text-indent':0}),
+
+												]
+											}),
+											$('<ul>', {
+												'id' : 'grid-conta-body'
+											}),
+										]
+									}).css({'font-size':'0.7em'});
+
+									arrayButton = $('<div>',{
+										'class' : 'btn-group',
+										append : [
+											$('<a>',{
+												'class' : 'btnGroups btn btn-large buttonBack',
+												'text' : 'Voltar',
+												click : function(event) {
+													event.preventDefault();
+													$('#window-modaltransferirItem').remove();
+												}
+											}),
+											$('<a>',{
+												'class' : 'btnGroups btn btn-large btn-inverse',
+												'text' : 'Transferir Mesa',
+												click : function(event) {
+													event.preventDefault();
+													// windowTransferir("0","transferircomanda", "comanda.controller.php", $("#n_mesa").val()  );
+													console.log(itensTransferir);
+													transferirItens("transferiritens", "comanda.controller.php", '0', $("#n_mesa").val());
+												}
+											}),
+											$('<a>',{
+												'class' : 'btnGroups btn btn-large btn-inverse',
+												'text' : 'Transferir Comanda',
+												click : function(event) {
+													event.preventDefault();
+													// windowTransferir("1","transferircomanda", "comanda.controller.php", $("#n_comanda").val() );
+													console.log(itensTransferir);
+													transferirItens("transferiritens", "comanda.controller.php", '1', $("#n_comanda").val());
+												}
+											}),
+										]
+									});
+																			
+									//Cria janela com os dados da conta
+									windowModal('transferirItem', 'Comanda: '+comanda + ' Mesa: ' + mesa, html, 'body', 'noButtonBack', 'none', arrayButton);
+									
+									//Popula a lista de itens
+									$.each(response.produtos, function(index, value){
+										$('<li>',{
+											'class' : 'grid-zebra',
+											append : [
+												$('<a>', {
+													'href' : '#',
+													'class' : 'btn',
+													'impresso' : value.IMPRESSO,
+													'nitem' : value.NITEM,
+
+													append : [
+														$('<em>',{'text' : value.DESCRICAO}).css({'width':'60%','float':'left','text-align':'left','text-indent':'10px'}),
+														$('<em>',{'text' : value.QUANTIDADE}).css({'width':'13%','float':'left','text-align':'left','text-indent':0}),
+														$('<em>',{'text' : value.PRECO_UNIT}).css({'width':'13%','float':'left','text-align':'left','text-indent':0}),
+														$('<em>',{'text' : value.VALOR_TOTAL_PRODUTO}).css({'width':'13%','float':'left','text-align':'left','text-indent':0})
+													],
+													click: function(){
+
+														if( $.inArray(value.NITEM, itensTransferir) !== -1 ){
+															$(this).css({'background': '', 'color' : ''});
+															itensTransferir = $.grep(itensTransferir, function(val, index) {
+																return val != value.NITEM;
+															});
+														}else{
+															itensTransferir.push(value.NITEM);
+															$(this).css({'background': '#51a351', 'color' : '#FFF'});
+														};
+
+													} 
+												})
+											],
+											appendTo : '#grid-conta-body'
+										})
+									});	
+																									
+									$('#grid-conta-body li a:odd').addClass('btn-info');
+								}
+							}
+						});
+
 					}else{
 						dialog('Esta função não está disponivel!','buttonClose','OK','none');
 					}
@@ -1306,5 +1445,46 @@
 			}
 		});
 	}
-	
+
+	function transferirItens(action, controller, type, n_value){
+		var value, itens;
+
+		itens = JSON.stringify(itensTransferir);
+
+		if(type == '0'){
+			value = mesa;
+		}else if(type == '1'){
+			value = comanda;
+		}
+
+		$.ajax({
+			url : generalUrl + generalControllerUrl + '/' + controller,
+			type : 'POST',
+			data : {'action' : action, 'n_val' : n_value, 'IP': generalIP, 'type':type , 'val': value, 'comanda' : comanda,'IP':generalIP, 'mesa':mesa, 'itens': itens },
+			timeout : 2000,
+			beforeSend : function(){
+				openLoading();
+			},
+			complete : function(){
+				closeLoading();
+			},						
+			success : function(data){
+
+				console.log(data);
+
+				if(global_debug == 'yes'){
+					dialog(data,'buttonClose','OK','none');
+				}
+
+				if(data.false === null || data.false === undefined || data.false.length === 0){
+					dialog("Todos os itens foram transferidos",'buttonClose','OK','none');
+				}else{
+					dialog("Os seguintes itens não foram transferidos: " + data.false, 'buttonClose','OK','none');
+				}
+
+				itensTransferir = [];
+			}
+		});
+	}
+
 </script>
